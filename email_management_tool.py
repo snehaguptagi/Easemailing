@@ -1,6 +1,7 @@
 from __future__ import print_function
 import os.path
 import base64
+import logging
 from email.mime.text import MIMEText
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
@@ -15,7 +16,8 @@ import pandas as pd
 import argparse
 from flask import Flask, request, jsonify
 
-# Gmail API setup
+logging.basicConfig(level=logging.INFO)
+
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 
 def authenticate_gmail():
@@ -35,6 +37,32 @@ def authenticate_gmail():
     return service
 
 def send_email(service, to, subject, body):
+    """
+    Sends an email using the specified Gmail service.
+
+    Args:
+        service: The Gmail service instance.
+        to: The recipient email address.
+        subject: The subject of the email.
+        body: The body of the email.
+
+    Raises:
+        Exception: If there is an error during sending the email.
+    """
+     try:
+        message = MIMEText(body)
+        message['to'] = to
+        message['subject'] = subject
+        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+
+        create_message = {
+            'raw': encoded_message
+        }
+
+        send_message = service.users().messages().send(userId="me", body=create_message).execute()
+        print(f'Sent email to {to}')
+    except Exception as e:
+        logging.error(f'An error occurred while sending email: {e}')
     message = MIMEText(body)
     message['to'] = to
     message['subject'] = subject
@@ -49,6 +77,9 @@ def send_email(service, to, subject, body):
 
 # Agents
 class EmailCompositionAgent:
+    def __init__(self, service):
+        self.service = service 
+
     def run(self, subject, body, recipients, attachments=None):
         email = {
             "subject": subject,
@@ -56,7 +87,9 @@ class EmailCompositionAgent:
             "recipients": recipients,
             "attachments": attachments
         }
-        return f"Composed email: {email}"
+        for recipient in recipients:
+            send_email(self.service, recipient, subject, body)
+        return f"Composed and sent email: {email}"
 
 class EmailCategorizationAgent:
     def __init__(self):
@@ -87,7 +120,7 @@ class EmailAnalyticsAgent:
         fig.show()
 
 class SecurityAndComplianceAgent:
-    def __init__(self):
+     def __init__(self):
         self.key = Fernet.generate_key()
         self.cipher = Fernet(self.key)
 
@@ -101,12 +134,10 @@ class SecurityAndComplianceAgent:
 
     def run(self, email_body):
         encrypted_body = self.encrypt(email_body)
-        decrypted_body = self.decrypt(encrypted_body)
         return {
             "encrypted_body": encrypted_body,
-            "decrypted_body": decrypted_body
+            "decrypted_body": self.decrypt(encrypted_body)
         }
-
 # Command-Line Interface (CLI)
 def cli():
     parser = argparse.ArgumentParser(description="Email Management Tool")
@@ -122,7 +153,7 @@ def cli():
         subject = input("Enter the subject: ")
         body = input("Enter the body: ")
         recipients = input("Enter recipients (comma-separated): ").split(',')
-        agent = EmailCompositionAgent()
+        agent = EmailCompositionAgent(service)
         result = agent.run(subject, body, recipients)
         print(result)
     elif args.categorize:
@@ -160,11 +191,14 @@ app = Flask(__name__)
 
 @app.route('/compose', methods=['POST'])
 def compose_email():
-    data = request.json
+   data = request.json
+    if not all(k in data for k in ('subject', 'body', 'recipients')):
+        return jsonify({"error": "Missing required fields"}), 400
     subject = data.get('subject')
     body = data.get('body')
     recipients = data.get('recipients')
-    agent = EmailCompositionAgent()
+    service = authenticate_gmail()
+    agent = EmailCompositionAgent(service) 
     result = agent.run(subject, body, recipients)
     return jsonify(result)
 
@@ -197,6 +231,7 @@ def secure_email():
     return jsonify(result)
 
 if __name__ == "__main__":
+    service = authenticate_gmail() 
     mode = input("Enter mode ('cli' for command-line, 'web' for web server): ")
     if mode == 'cli':
         cli()
