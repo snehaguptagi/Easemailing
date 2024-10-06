@@ -1,13 +1,19 @@
+import os
+import logging
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-import os
+from googleapiclient.discovery import build
+
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly',  
+          'https://www.googleapis.com/auth/gmail.send']
 
 def get_gmail_service():
     """Create and return the Gmail API service."""
     creds = None
+
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, prompt the user to log in.
+
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             try:
@@ -18,9 +24,10 @@ def get_gmail_service():
         else:
             logging.error("Credentials are not valid. Please re-authenticate.")
             return None
-        # Save the credentials for the next run
+
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
+
     try:
         service = build('gmail', 'v1', credentials=creds)
         return service
