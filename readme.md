@@ -1,8 +1,5 @@
-<div align="center">
-  <img src="![Screenshot 2024-07-20 171533](https://github.com/user-attachments/assets/43ecaa48-57df-46a8-a060-7bbd497924df)
-" alt="Easemailing Logo" width=50%>
-  <h1>Easemailing - Ease the tedious task of mailing</h1>
-</div>
+![Screenshot 2024-07-20 171533](https://github.com/user-attachments/assets/253c223a-d9bb-42fa-84fe-d034cdb7766a)
+
 
 [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Feasemailing.in)]
 [![first-timers](https://img.shields.io/badge/first--timers--friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)
