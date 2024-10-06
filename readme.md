@@ -7,16 +7,6 @@
 [![first-timers](https://img.shields.io/badge/first--timers--friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-  ![Screenshot 2024-07-20 171533](https://github.com/user-attachments/assets/bd52b790-b18b-4cf8-aaaf-af4ec3a740ad)
-  
-website
-
-first-timers-friendly 
-https://www.firsttimersonly.com/
-
-license
-https://opensource.org/license/MIT
-
 # Easemailing
 
 ## Purpose
