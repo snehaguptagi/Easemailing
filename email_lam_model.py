@@ -5,24 +5,20 @@ from dotenv import load_dotenv
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
-# Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Load environment variables
 load_dotenv()
 
-# Set API keys
-openai.api_key = os.getenv("sk-GwAq0hTUWY-bjjORECOlL0hpsKcICCSgzP8fJYjmxfT3BlbkFJZZTi8l_uzZdAEcTKwop-gU2GbMoaeB9APntAy-Z0gA")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT")
 
-# Define Gmail API scope
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 class LAMModel:
     def __init__(self):
-        self.model = "text-davinci-003"  # You can choose a different model if needed
+        self.model = "text-davinci-003"  
 
     def generate_email(self, prompt):
         """Generate email content using the LAM model."""
@@ -30,14 +26,13 @@ class LAMModel:
             response = openai.Completion.create(
                 model=self.model,
                 prompt=prompt,
-                max_tokens=150  # Adjust max_tokens as needed
+                max_tokens=150  
             )
             return response.choices[0].text.strip()
         except Exception as e:
             logging.error(f"Error generating email: {e}")
             return ""
 
-# Initialize the LAM Model
 lam_model = LAMModel()
 
 class Agent:
@@ -164,7 +159,7 @@ class Process:
         for task_name, task_info in self.tasks.items():
             try:
                 agent = task_info["agent"]
-                context = agent.run(context.copy())  # Pass a copy of the context
+                context = agent.run(context.copy())  
                 results[task_name] = "Completed"
                 logging.info(f"{task_name}: Completed")
             except Exception as e:
@@ -172,7 +167,6 @@ class Process:
                 logging.error(f"{task_name}: Failed - {e}")
         return results
 
-# Initialize Crew (Process in this case)
 crew = Process(
     agents={
         "email_composition": EmailCompositionAgent(),
@@ -190,7 +184,6 @@ crew = Process(
     verbose=2
 )
 
-# CLI for interacting with the agents
 import click
 import schedule
 import time
@@ -220,6 +213,10 @@ def run_all_tasks(task):
             print(f"{task_name}: {status}")
 
 @click.command()
+def list_tasks():
+    """List available tasks."""
+    for task_name, task_info in tasks.items():
+        print(f"{task_name}: {task_info['description']}")
 def schedule_task():
     """Schedule a task to run periodically."""
     def job():
