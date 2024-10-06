@@ -1,5 +1,6 @@
 <div align="center">
-  <img src="![Screenshot 2024-07-20 171533](https://github.com/user-attachments/assets/c30a8d8a-24d0-4705-b075-e9bb2e9c2c08)" alt="Easemailing Logo" width=50%>
+  <img src="![Screenshot 2024-07-20 171533](https://github.com/user-attachments/assets/43ecaa48-57df-46a8-a060-7bbd497924df)
+" alt="Easemailing Logo" width=50%>
   <h1>Easemailing - Ease the tedious task of mailing</h1>
 </div>
 
