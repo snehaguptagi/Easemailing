@@ -39,7 +39,7 @@ You can modify the email prompts and recipients in the code.
 Contributing:
 Contributions are welcome! If you find any bugs or have feature suggestions, please open an issue or submit a pull request.
 
-License
+License:
 This project is licensed under the MIT License.
 
 ### 2. Code Comments
