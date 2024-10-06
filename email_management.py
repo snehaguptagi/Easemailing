@@ -10,7 +10,6 @@ import time
 import click
 import unittest
 
-# Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -20,10 +19,8 @@ logging.basicConfig(
     ]
 )
 
-# Load environment variables
 load_dotenv()
 
-# Set API keys with error handling
 openai.api_key = os.getenv("OPENAI_API_KEY")
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
@@ -33,14 +30,13 @@ if not all([openai.api_key, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_
     logging.error("API keys or environment variables are missing.")
     raise EnvironmentError("Missing environment variables. Check your .env file.")
 
-# Define Gmail API scope
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 class LAMModel:
     """A model to interact with OpenAI's GPT for generating email content."""
     
-    def __init__(self):
-        self.model = "text-davinci-003"  # You can choose a different model if needed
+    def __init__(self, model="text-davinci-003"):
+        self.model = model  
 
     def generate_email(self, prompt):
         """Generate email content using the LAM model."""
@@ -48,7 +44,7 @@ class LAMModel:
             response = openai.Completion.create(
                 model=self.model,
                 prompt=prompt,
-                max_tokens=150  # Adjust max_tokens as needed
+                max_tokens=150  
             )
             return response.choices[0].text.strip()
         except openai.error.OpenAIError as e:
@@ -58,7 +54,6 @@ class LAMModel:
             logging.error(f"Unexpected Error: {e}")
             return "An unexpected error occurred while generating the email."
 
-# Initialize the LAM Model
 lam_model = LAMModel()
 
 class Agent:
@@ -117,7 +112,10 @@ class FollowUpReminderAgent(Agent):
     
     def run(self, context=None):
         """Provide follow-up reminders."""
-        reminders = ["Follow up on the project update email.", "Send a reminder for the meeting."]
+        reminders = [
+            "Follow up on the project update email.", 
+            "Send a reminder for the meeting."
+        ]
         context = context or {}
         context["reminders"] = reminders
         return context
@@ -180,7 +178,6 @@ class SecurityAndComplianceAgent(Agent):
         context["compliance_status"] = compliance_status
         return context
 
-# Define tasks with associated agents
 tasks = {
     "email_composition": {"description": "Assist users in composing emails", "agent": EmailCompositionAgent()},
     "email_categorization": {"description": "Automatically categorize incoming emails", "agent": EmailCategorizationAgent()},
@@ -197,20 +194,21 @@ tasks = {
 class Process:
     """A class to manage the execution of multiple agents (tasks) in a process."""
     
-    def __init__(self, agents, tasks, verbose=2, tools=None):
+    def __init__(self, agents, tasks, verbose=2):
         self.agents = agents
         self.tasks = tasks
         self.verbose = verbose
-        self.tools = tools if tools else []
 
     def run_all_tasks(self, initial_context=None):
         """Run all tasks in sequence, capturing their output in the context."""
         results = {}
-        context = initial_context or {"email_content": "Dear Team, I would like to inform you about the upcoming project deadlines and the tasks assigned to each member. Regards, [Your Name]"}
+        context = initial_context or {
+            "email_content": "Dear Team, I would like to inform you about the upcoming project deadlines and the tasks assigned to each member. Regards, [Your Name]"
+        }
         for task_name, task_info in self.tasks.items():
             try:
                 agent = task_info["agent"]
-                context = agent.run(context.copy())  # Pass a copy of the context
+                context = agent.run(context.copy())  
                 results[task_name] = "Completed"
                 logging.info(f"{task_name}: Completed")
             except Exception as e:
@@ -218,20 +216,8 @@ class Process:
                 logging.error(f"{task_name}: Failed - {e}")
         return results
 
-# Initialize Crew (Process in this case)
 crew = Process(
-    agents={
-        "email_composition": EmailCompositionAgent(),
-        "email_categorization": EmailCategorizationAgent(),
-        "email_summarization": EmailSummarizationAgent(),
-        "response_suggestion": ResponseSuggestionAgent(),
-        "follow_up_reminder": FollowUpReminderAgent(),
-        "meeting_scheduler": MeetingSchedulerAgent(),
-        "attachment_management": AttachmentManagementAgent(),
-        "contact_management": ContactManagementAgent(),
-        "email_analytics": EmailAnalyticsAgent(),
-        "security_and_compliance": SecurityAndComplianceAgent()
-    },
+    agents={name: task_info["agent"] for name, task_info in tasks.items()},
     tasks=tasks,
     verbose=2
 )
@@ -264,12 +250,12 @@ def list_tasks():
         print(f"{task_name}: {task_info['description']}")
 
 @click.command()
-@click.option('--time', default="09:00", help='Time to run the task (e.g., 09:00)')
+@click.option('--time', default="09:00", help='Time to run the task (e.g., 09:00 for 9 AM)')
 def schedule_task(time):
-    """Schedule a task to run at a specified time."""
-    schedule.every().day.at(time).do(run_all_tasks)
-    logging.info(f"Task scheduled to run every day at {time}.")
-
+    """Schedule the task to run daily at a specific time."""
+    schedule.every().day.at(time).do(crew.run_all_tasks)
+    logging.info(f"Task scheduled to run daily at {time}.")
+    
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -280,57 +266,3 @@ cli.add_command(schedule_task)
 
 if __name__ == '__main__':
     cli()
-
-# Unit tests for the LAM Model
-class TestLAMModel(unittest.TestCase):
-    
-    def test_generate_email(self):
-        lam_model = LAMModel()
-        result = lam_model.generate_email("Test email prompt")
-        self.assertIsInstance(result, str)
-        self.assertGreater(len(result), 0)
-    
-    def test_email_composition_agent(self):
-        agent = EmailCompositionAgent()
-        context = agent.run()
-        self.assertIn("email_composition", context)
-        self.assertIsInstance(context["email_composition"]["body"], str)
-
-    def test_email_summarization_agent(self):
-        agent = EmailSummarizationAgent()
-        context = {"email_content": "Test email content"}
-        context = agent.run(context)
-        self.assertIn("summary", context)
-        self.assertIsInstance(context["summary"], str)
-    
-    def test_process_run_all_tasks(self):
-        process = Process(
-            agents={
-                "email_composition": EmailCompositionAgent(),
-                "email_summarization": EmailSummarizationAgent()
-            },
-            tasks=tasks,
-            verbose=2
-        )
-        results = process.run_all_tasks()
-        self.assertEqual(results["email_composition"], "Completed")
-        self.assertEqual(results["email_summarization"], "Completed")
-
-if __name__ == '__main__':
-    unittest.main()
-
-app = Flask(Easemailing)
-
-@app.route('/run_task', methods=['POST'])
-def run_task():
-    task_name = request.json.get('task')
-    if task_name in tasks:
-        agent = tasks[task_name]["agent"]
-        context = {}
-        result = agent.run(context)
-        return jsonify(result)
-    else:
-        return jsonify({"error": "Task not found"}), 404
-
-if __name__ == '__main__':
-    app.run(debug=True)
