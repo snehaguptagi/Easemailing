@@ -1,6 +1,9 @@
 import os
-import openai
 import logging
+import click
+import schedule
+import time
+import openai
 from dotenv import load_dotenv
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -8,7 +11,6 @@ from googleapiclient.discovery import build
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 load_dotenv()
-
 openai.api_key = os.getenv("OPENAI_API_KEY")
 REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
@@ -18,9 +20,9 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 class LAMModel:
     def __init__(self):
-        self.model = "text-davinci-003"  
+        self.model = "text-davinci-003"
 
-    def generate_email(self, prompt):
+    def generate_email(self, prompt: str) -> str:
         """Generate email content using the LAM model."""
         try:
             response = openai.Completion.create(
@@ -36,12 +38,12 @@ class LAMModel:
 lam_model = LAMModel()
 
 class Agent:
-    def run(self, context=None):
+    def execute(self, context=None):
         """Method to be overridden by subclasses."""
         raise NotImplementedError("Subclasses should implement this method.")
 
 class EmailCompositionAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Compose an email using LAM."""
         prompt = "Compose an email with the following details: Meeting reminder for next week."
         email_body = lam_model.generate_email(prompt)
@@ -51,7 +53,7 @@ class EmailCompositionAgent(Agent):
         return context
 
 class EmailCategorizationAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Categorize emails into predefined categories."""
         categories = ["Work", "Personal", "Promotions"]
         context = context or {}
@@ -59,7 +61,7 @@ class EmailCategorizationAgent(Agent):
         return context
 
 class EmailSummarizationAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Summarize the email content using LAM."""
         email_content = context.get("email_content", "")
         prompt = f"Summarize the following email: {email_content}"
@@ -68,7 +70,7 @@ class EmailSummarizationAgent(Agent):
         return context
 
 class ResponseSuggestionAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Suggest responses based on the email summary using LAM."""
         summary = context.get("summary", "")
         prompt = f"Suggest responses to the following email summary: {summary}"
@@ -77,7 +79,7 @@ class ResponseSuggestionAgent(Agent):
         return context
 
 class FollowUpReminderAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Provide follow-up reminders."""
         reminders = ["Follow up on the project update email.", "Send a reminder for the meeting."]
         context = context or {}
@@ -85,7 +87,7 @@ class FollowUpReminderAgent(Agent):
         return context
 
 class MeetingSchedulerAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Schedule a meeting based on context."""
         meeting_details = {
             "date": "2024-08-01",
@@ -97,7 +99,7 @@ class MeetingSchedulerAgent(Agent):
         return context
 
 class AttachmentManagementAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Manage email attachments."""
         attachments = ["file1.pdf", "image2.png", "document3.docx"]
         context = context or {}
@@ -105,7 +107,7 @@ class AttachmentManagementAgent(Agent):
         return context
 
 class ContactManagementAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Manage email contacts."""
         contacts = ["Alice", "Bob", "Charlie"]
         context = context or {}
@@ -113,7 +115,7 @@ class ContactManagementAgent(Agent):
         return context
 
 class EmailAnalyticsAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Provide email analytics."""
         analytics = {
             "total_emails": 150,
@@ -125,14 +127,13 @@ class EmailAnalyticsAgent(Agent):
         return context
 
 class SecurityAndComplianceAgent(Agent):
-    def run(self, context=None):
+    def execute(self, context=None):
         """Ensure email security and compliance."""
         compliance_status = "All emails are secure and compliant with company policies."
         context = context or {}
         context["compliance_status"] = compliance_status
         return context
 
-# Create tasks
 tasks = {
     "email_composition": {"description": "Assist users in composing emails", "agent": EmailCompositionAgent()},
     "email_categorization": {"description": "Automatically categorize incoming emails", "agent": EmailCategorizationAgent()},
@@ -147,11 +148,10 @@ tasks = {
 }
 
 class Process:
-    def __init__(self, agents, tasks, verbose=2, tools=None):
+    def __init__(self, agents, tasks, verbose=2):
         self.agents = agents
         self.tasks = tasks
         self.verbose = verbose
-        self.tools = tools if tools else []
 
     def run_all_tasks(self, initial_context=None):
         results = {}
@@ -159,7 +159,7 @@ class Process:
         for task_name, task_info in self.tasks.items():
             try:
                 agent = task_info["agent"]
-                context = agent.run(context.copy())  
+                context = agent.execute(context.copy())  
                 results[task_name] = "Completed"
                 logging.info(f"{task_name}: Completed")
             except Exception as e:
@@ -167,26 +167,7 @@ class Process:
                 logging.error(f"{task_name}: Failed - {e}")
         return results
 
-crew = Process(
-    agents={
-        "email_composition": EmailCompositionAgent(),
-        "email_categorization": EmailCategorizationAgent(),
-        "email_summarization": EmailSummarizationAgent(),
-        "response_suggestion": ResponseSuggestionAgent(),
-        "follow_up_reminder": FollowUpReminderAgent(),
-        "meeting_scheduler": MeetingSchedulerAgent(),
-        "attachment_management": AttachmentManagementAgent(),
-        "contact_management": ContactManagementAgent(),
-        "email_analytics": EmailAnalyticsAgent(),
-        "security_and_compliance": SecurityAndComplianceAgent()
-    },
-    tasks=tasks,
-    verbose=2
-)
-
-import click
-import schedule
-import time
+crew = Process(agents={}, tasks=tasks)
 
 @click.group()
 def cli():
@@ -202,7 +183,7 @@ def run_all_tasks(task):
         if task in tasks:
             agent = tasks[task]["agent"]
             context = {}
-            context = agent.run(context.copy())
+            context = agent.execute(context.copy())
             print(f"{task}: Completed")
         else:
             logging.error(f"Task {task} not found")
@@ -217,7 +198,9 @@ def list_tasks():
     """List available tasks."""
     for task_name, task_info in tasks.items():
         print(f"{task_name}: {task_info['description']}")
-def schedule_task():
+
+@click.command()
+def schedule_tasks():
     """Schedule a task to run periodically."""
     def job():
         logging.info("Running scheduled tasks...")
@@ -226,12 +209,15 @@ def schedule_task():
             print(f"{task_name}: {status}")
 
     schedule.every().day.at("09:00").do(job)
+    logging.info("Scheduled tasks to run every day at 09:00.")
+
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(1)
 
 cli.add_command(run_all_tasks)
-cli.add_command(schedule_task)
+cli.add_command(list_tasks)
+cli.add_command(schedule_tasks)
 
 if __name__ == "__main__":
     cli()
