@@ -1,3 +1,5 @@
+  ![Screenshot 2024-07-20 171533](https://github.com/user-attachments/assets/bd52b790-b18b-4cf8-aaaf-af4ec3a740ad)
+
 # Easemailing
 
 ## Purpose
