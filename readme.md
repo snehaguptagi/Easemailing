@@ -17,9 +17,9 @@ Easemailing is a Python-based application that automates email content generatio
 - Gmail API credentials (for accessing Gmail)
 
 ### Installation
-1. Clone the repository:
+Clone the repository:
    ```bash
-   git clone https://github.com/your-username/easemailing.git
+   git clone https://github.com/sneha-81/easemailing.git
    cd easemailing
 
 Install dependencies:
@@ -31,20 +31,18 @@ SENDGRID_API_KEY=your-sendgrid-api-key
 
 Gmail API Credentials: Obtain credentials from the Google Developer Console and save them as credentials.json in the root directory.
 
-Usage:
+## Usage:
 To generate and send an email, run:
 python main.py
 You can modify the email prompts and recipients in the code.
 
-Contributing:
+## Contributing:
 Contributions are welcome! If you find any bugs or have feature suggestions, please open an issue or submit a pull request.
 
-License:
+## License:
 This project is licensed under the MIT License.
 
-Acknowledgements:
-OpenAI for providing the powerful language model.
-SendGrid for offering reliable email delivery services.
-Google for their APIs that enable seamless email interactions.
+## Acknowledgements:
+OpenAI for providing the powerful language model, SendGrid for offering reliable email delivery services and Google for their APIs that enable seamless email interactions.
 
 
