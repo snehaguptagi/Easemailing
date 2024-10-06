@@ -39,5 +39,7 @@ This project is licensed under the MIT License.
 
 ## Acknowledgements
 -OpenAI for providing the powerful language model.
+
 -SendGrid for offering reliable email delivery services.
+
 -Google for their APIs that enable seamless email interactions.
