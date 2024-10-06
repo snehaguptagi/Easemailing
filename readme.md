@@ -19,24 +19,28 @@ Easemailing is a Python-based application that automates email content generatio
 ## Installation
 
 Clone the repository:
--git clone https://github.com/sneha-81/easemailing.git
 
--cd easemailing
+git clone https://github.com/sneha-81/easemailing.git
+
+cd easemailing
 
 Install dependencies:
--Gmail API Credentials: Obtain credentials from the Google Developer Console and save them as credentials.json in the root directory.
+
+Gmail API Credentials: Obtain credentials from the Google Developer Console and save them as credentials.json in the root directory.
 
 ## Usage
--To generate and send an email, run:
 
--python main.py
+To generate and send an email, run:
 
--You can modify the email prompts and recipients in the code.
+python main.py
+
+You can modify the email prompts and recipients in the code.
 
 ## Contributing
--Contributions are welcome! 
 
--If you find any bugs or have feature suggestions, please open an issue or submit a pull request.
+Contributions are welcome! 
+
+If you find any bugs or have feature suggestions, please open an issue or submit a pull request.
 
 ## License
 This project is licensed under the MIT License.
