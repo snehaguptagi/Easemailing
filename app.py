@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from email_utils import generate_email_content, send_email
 
-app = Flask(__name__)
+app = Flask(Easemailing)
 
 @app.route('/generate-email', methods=['POST'])
 def generate_email():
