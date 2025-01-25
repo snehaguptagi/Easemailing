@@ -1,4 +1,3 @@
-```markdown
 # Easemailing
 
 [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Feasemailing.in)](https://easemailing6.wordpress.com/)  
