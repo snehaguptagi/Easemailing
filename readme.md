@@ -1,20 +1,9 @@
-![Screenshot 2024-07-20 171533](https://github.com/user-attachments/assets/253c223a-d9bb-42fa-84fe-d034cdb7766a)
-
-
-[![Website Status](https://img.shields.io/website?url=https%3A%2F%2Feasemailing.in)](https://easemailing6.wordpress.com/)
-[![first-timers](https://img.shields.io/badge/first--timers--friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT
-
-# Update the README file with the improved content
-updated_readme_content = """
 # Easemailing
 
 [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Feasemailing.in)](https://easemailing6.wordpress.com/)  
 [![First Timers](https://img.shields.io/badge/first--timers--friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)  
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-git clone https://github.com/sneha-81/easemailing.git
-cd easemailing
 Easemailing is a Python-based application that automates email content generation and sending using OpenAI and SendGrid. It simplifies communication by generating professional emails effortlessly.
 
 ## Features
@@ -37,9 +26,8 @@ Install Dependencies
 Use pip to install required packages:
 
 bash
-Always show details
-
 Copy
+Edit
 pip install -r requirements.txt
 Setup Gmail API
 Visit the Google Cloud Console.
@@ -49,9 +37,8 @@ Environment Variables
 Create a .env file with the following keys:
 
 env
-Always show details
-
 Copy
+Edit
 OPENAI_API_KEY=your_openai_api_key
 SMTP_EMAIL=your_email@gmail.com
 SMTP_PASSWORD=your_app_password  # Gmail App Password or OAuth token
@@ -59,9 +46,8 @@ Usage
 Modify email prompts and recipient details in the script if needed.
 Run the application:
 bash
-Always show details
-
 Copy
+Edit
 python app.py
 Contribution Guide
 We welcome contributions from everyone! Here's how you can help:
@@ -69,21 +55,18 @@ We welcome contributions from everyone! Here's how you can help:
 Fork the repository.
 Clone your fork:
 bash
-Always show details
-
 Copy
+Edit
 git clone https://github.com/your-username/easemailing.git
 Create a feature branch:
 bash
-Always show details
-
 Copy
+Edit
 git checkout -b feature-name
 Commit your changes and push:
 bash
-Always show details
-
 Copy
+Edit
 git add .
 git commit -m "Description of your feature"
 git push origin feature-name
@@ -94,3 +77,8 @@ This project is licensed under the MIT License.
 Acknowledgements
 OpenAI for their language model.
 Gmail for seamless email interactions.
+vbnet
+Copy
+Edit
+
+You can replace the current `README.md` file content with the above text. Let me know if you need further help!
