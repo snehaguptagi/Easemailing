@@ -1,20 +1,17 @@
-# Python files
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Environment variables
-.env
-
-# Credentials
+*.py[cod]
+.venv/
+venv/
+backend/.env
+*.env
+token.json
 credentials.json
-gmail_oauth.py
 
-# IDE specific files
-.vscode/
-.idea/
+# Node / Vite
+node_modules/
+frontend/dist/
+frontend/.env
 
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-
+# OS
+.DS_Store
