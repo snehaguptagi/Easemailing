@@ -25,13 +25,21 @@ const HeroSection = () => {
           </p>
         </div>
         
-        <div className="fade-in-up stagger-2">
+        <div className="fade-in-up stagger-2 flex flex-wrap items-center justify-center gap-4">
           <Button
             size="lg"
             onClick={() => navigate('/app')}
             className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground text-lg px-8 py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Open the App
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => navigate('/demo')}
+            className="text-lg px-8 py-4 rounded-lg font-semibold transition-all duration-300"
+          >
+            Watch it work
           </Button>
         </div>
       </div>

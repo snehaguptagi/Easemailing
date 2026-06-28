@@ -6,12 +6,21 @@ reply — so you act on email instead of just reading it.
 
 This is one end-to-end product:
 
-- **Frontend** (`frontend/`) — React + Vite + TypeScript + Tailwind + shadcn/ui. A landing
-  page plus a functional app at `/app`: inbox → pick an email → **Analyze with AI** →
-  see summary / intent / category / priority / extracted entities / suggested action /
-  editable draft → **Approve & run the action**.
+- **Frontend** (`frontend/`) — React + Vite + TypeScript + Tailwind + shadcn/ui. Three
+  surfaces on one backend:
+  - `/` — landing page.
+  - `/app` — the working app: inbox → pick an email → **Analyze with AI** → see summary /
+    intent / category / priority / extracted entities / suggested action / editable draft →
+    **Approve & run the action**.
+  - `/demo` — **Watch it work**: a guided, step-by-step walkthrough that runs one email
+    through the *real* pipeline live — **Fetch → Understand → Extract → Recommend → Act** —
+    using the same endpoints as the app.
 - **Backend** (`backend/`) — FastAPI + a Claude-powered reasoning engine. Returns a
   validated structured analysis per email.
+
+> Consolidates the earlier *MailMind* (`ai-inbox-actions`) prototype: its "watch the email
+> flow through the pipeline" demo now lives at `/demo`, rebuilt on this Claude backend
+> (the old Ollama prototype is retired).
 
 ## Real + demo mode
 
@@ -40,10 +49,10 @@ uvicorn main:app --reload --port 8000
 ```bash
 cd frontend
 npm install
-npm run dev                      # http://localhost:5173  →  open /app
+npm run dev                      # http://localhost:8080  →  open /app
 ```
 
-Open `http://localhost:5173`, click **Open the App**, pick an email, and hit
+Open `http://localhost:8080`, click **Open the App**, pick an email, and hit
 **Analyze with AI**.
 
 ## API
